@@ -36,7 +36,7 @@ server.on("upgrade", async (request, socket, head) => {
       return socket.destroy();
     }
 
-    const boardId = decodeURIComponent(match[1]);
+    const boardId = decodeURIComponent(match?.[1] || "");
 
     // The board must already exist (created via REST). No silent auto-create
     // here, so a mistyped/expired id can't resurrect a dead board.
