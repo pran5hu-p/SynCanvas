@@ -13,8 +13,11 @@ const makeClient = (label: string) => {
   const client = new Redis(config.redisUrl, {
     maxRetriesPerRequest: null,
     lazyConnect: false,
+    keepAlive: 10_000,
   });
-  client.on("error", (err: Error) => console.error(`[redis:${label}] ${err.message}`));
+  client.on("error", (err: Error) => console.error(`[redis:${label}]`, err));
+  client.on("reconnecting", (delay: number) => console.log(`[redis:${label}] reconnecting in ${delay}ms`));
+  client.on("connect", () => console.log(`[redis:${label}] connected`));  
   return client;
 };
 

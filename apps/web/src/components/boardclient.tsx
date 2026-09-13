@@ -151,7 +151,7 @@ function Workspace({
         onManageAccess={() => setAccessOpen(true)}
       />
 
-      <div className="relative flex-1">
+      <div className="relative min-h-0 flex-1">
         <Canvas board={board} tool={tool} color={color} strokeWidth={strokeWidth} />
 
         {!board.canDraw && (

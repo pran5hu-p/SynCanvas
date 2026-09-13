@@ -1,50 +1,129 @@
+@import "tailwindcss";
+
+/*
+ * THEME TOKENS
+ * ------------
+ * Single source of truth for the palette. Swap these RGB triplets to re-key the
+ * entire product to the Hero asset's colors. Defaults below are a "technical
+ * blueprint" scheme: near-black ink, paper-white canvas, one vermilion accent.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: 18 16 11; /* app background — warm near-black */
+  --surface: 28 25 18; /* panels */
+  --surface-2: 40 36 26; /* raised panels / inputs */
+  --line: 66 60 45; /* hairline borders (warm) */
+  --muted: 156 146 128; /* secondary text — warm taupe */
+  --paper: 244 239 227; /* the canvas — warm cream, sampled from hero */
+  --accent: 198 145 12; /* gold — sampled from the hero's most vivid tone */
+  --accent-ink: 18 16 11; /* near-black text on top of gold */
+
+  --font-sans: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/*
+ * Register the palette (and a couple of extra scale values) with Tailwind's
+ * theme so utilities like bg-accent, text-paper, border-line, max-w-shell,
+ * and tracking-tightest are actually generated. `inline` keeps these as
+ * live var() references instead of baking them in at build time, so the
+ * "swap the RGB triplets above" trick above still works.
+ */
+@theme inline {
+  --color-ink: rgb(var(--ink));
+  --color-surface: rgb(var(--surface));
+  --color-surface-2: rgb(var(--surface-2));
+  --color-line: rgb(var(--line));
+  --color-muted: rgb(var(--muted));
+  --color-paper: rgb(var(--paper));
+  --color-accent: rgb(var(--accent));
+  --color-accent-ink: rgb(var(--accent-ink));
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --container-shell: 80rem;
+  --tracking-tightest: -0.045em;
+}
+
+* {
+  border-color: rgb(var(--line));
 }
 
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  height: 100%;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  background-color: rgb(var(--ink));
+  color: rgb(var(--paper));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* Thin, technical scrollbars. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(var(--ink));
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--line));
+  border: 2px solid rgb(var(--ink));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--muted));
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* Blueprint grid used behind the hero. */
+.grid-backdrop {
+  background-image:
+    linear-gradient(rgb(var(--line) / 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--line) / 0.35) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
 }
 
-.imgDark {
-  display: none;
+/* Focus ring that respects the sharp aesthetic. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+  }
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@layer components {
+  /* Primary action: solid accent block. */
+  .btn-accent,
+  .btn-ghost,
+  .btn-quiet {
+    @apply inline-flex items-center justify-center gap-2 border px-5 py-3
+           text-sm font-medium tracking-wide transition-colors
+           disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-accent {
+    @apply border-accent bg-accent text-accent-ink hover:bg-accent/90;
+  }
+  .btn-ghost {
+    @apply border-line bg-transparent text-paper hover:border-paper/60;
+  }
+  .btn-quiet {
+    @apply border-transparent bg-transparent text-muted hover:text-paper;
   }
 
-  .imgLight {
-    display: none;
+  .field {
+    @apply w-full border border-line bg-surface-2 px-4 py-3 text-sm
+           text-paper placeholder:text-muted focus:border-accent;
   }
-  .imgDark {
-    display: unset;
+
+  .label-mono {
+    @apply font-mono text-[11px] uppercase tracking-widest text-muted;
+  }
+
+  .panel {
+    @apply border border-line bg-surface;
   }
 }
