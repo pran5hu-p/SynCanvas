@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import { WebSocketServer } from "ws";
 import { config } from "./config.js";
-import { boardsRouter } from "./boards-api.js";
+import { boardsRouter } from "./board-api.js";
 import { setupConnection } from "./connection.js";
 import { getBoardMeta } from "./redis.js";
 import { rooms } from "./room.js";

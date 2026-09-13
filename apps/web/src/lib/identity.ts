@@ -54,7 +54,7 @@ export function getLocalUser(): LocalUser {
   const user: LocalUser = {
     id: nid(),
     name: `Guest-${nid().slice(0, 4)}`,
-    color: CURSOR_COLORS[Math.floor(Math.random() * CURSOR_COLORS.length)],
+    color: CURSOR_COLORS[Math.floor(Math.random() * CURSOR_COLORS.length)]!,
   };
   write(K_USER, user);
   return user;
