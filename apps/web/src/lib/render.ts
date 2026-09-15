@@ -31,15 +31,14 @@ export function drawElement(
     const pts = el.points;
     if (pts.length < 2) return;
     ctx.beginPath();
-    const [sx, sy] = boardToScreen(cam, pts[0], pts[1]);
+    const [sx, sy] = boardToScreen(cam, pts[0]!, pts[1]!);
     ctx.moveTo(sx, sy);
-    // Quadratic smoothing through midpoints for a clean ink feel.
     for (let i = 2; i < pts.length - 2; i += 2) {
-      const [x0, y0] = boardToScreen(cam, pts[i], pts[i + 1]);
-      const [x1, y1] = boardToScreen(cam, pts[i + 2], pts[i + 3]);
+      const [x0, y0] = boardToScreen(cam, pts[i]!, pts[i + 1]!);
+      const [x1, y1] = boardToScreen(cam, pts[i + 2]!, pts[i + 3]!);
       ctx.quadraticCurveTo(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
     }
-    const [ex, ey] = boardToScreen(cam, pts[pts.length - 2], pts[pts.length - 1]);
+    const [ex, ey] = boardToScreen(cam, pts[pts.length - 2]!, pts[pts.length - 1]!);
     ctx.lineTo(ex, ey);
     ctx.stroke();
     return;
@@ -71,10 +70,10 @@ export function bounds(el: Element): { x: number; y: number; w: number; h: numbe
       maxX = -Infinity,
       maxY = -Infinity;
     for (let i = 0; i < el.points.length; i += 2) {
-      minX = Math.min(minX, el.points[i]);
-      maxX = Math.max(maxX, el.points[i]);
-      minY = Math.min(minY, el.points[i + 1]);
-      maxY = Math.max(maxY, el.points[i + 1]);
+      minX = Math.min(minX, el.points[i]!);
+      maxX = Math.max(maxX, el.points[i]!);
+      minY = Math.min(minY, el.points[i + 1]!);
+      maxY = Math.max(maxY, el.points[i + 1]!);
     }
     return { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
   }
@@ -126,12 +125,12 @@ export function hitTest(el: Element, px: number, py: number, pad: number): boole
   if (el.type === "pen") {
     const p = el.points;
     if (p.length === 2) {
-      const dx = p[0] - px;
-      const dy = p[1] - py;
+      const dx = p[0]! - px;
+      const dy = p[1]! - py;
       return dx * dx + dy * dy <= padSq;
     }
     for (let i = 0; i + 3 < p.length; i += 2) {
-      if (distSqToSegment(px, py, p[i], p[i + 1], p[i + 2], p[i + 3]) <= padSq) {
+      if (distSqToSegment(px, py, p[i]!, p[i + 1]!, p[i + 2]!, p[i + 3]!) <= padSq) {
         return true;
       }
     }
